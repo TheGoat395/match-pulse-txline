@@ -4,6 +4,8 @@ Match Pulse is a responsive World Cup fan matchroom built for the TxLINE × Supe
 
 It reads live TxLINE fixture and score snapshots, lets a fan open a fixture for the current event state, and keeps a local, non-wagering pick for the next match. The product intentionally does not transmit picks, place bets, or initiate transactions.
 
+**Live app:** https://thegoat395.github.io/match-pulse-txline/
+
 ## Live TxLINE integration
 
 The client uses these documented TxLINE endpoints:
