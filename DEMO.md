@@ -18,4 +18,3 @@ Target duration: 90–150 seconds.
 - `GET /api/fixtures/snapshot` with the documented TxLINE headers.
 - `GET /api/scores/snapshot/{fixtureId}` after selecting a fixture.
 - No API token appears in the repository, screenshot, or demo narration.
-
