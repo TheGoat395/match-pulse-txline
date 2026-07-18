@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Match Pulse turns live TxLINE World Cup data into a social matchroom for fans."
+    />
+    <title>Match Pulse — Live World Cup Matchroom</title>
+    <link rel="preconnect" href="https://txline.txodds.com" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="Match Pulse home">
+          <span class="brand-mark" aria-hidden="true">MP</span>
+          <span>Match Pulse</span>
+        </a>
+        <div class="topbar-actions">
+          <span id="connectionBadge" class="connection-badge is-idle">Not connected</span>
+          <button id="openSetup" class="button button-quiet" type="button">Connect TxLINE</button>
+        </div>
+      </header>
+
+      <section class="hero" id="top">
+        <p class="eyebrow">WORLD CUP · LIVE MATCHROOM</p>
+        <h1>Follow the match.<br /><em>Feel the pulse.</em></h1>
+        <p class="hero-copy">
+          A social matchroom for World Cup fans: live fixtures, score-event context,
+          and a fast local picks board powered by TxLINE.
+        </p>
+        <div class="hero-actions">
+          <button id="heroConnect" class="button button-primary" type="button">Connect live data</button>
+          <button id="refreshData" class="button button-secondary" type="button" disabled>Refresh now</button>
+        </div>
+      </section>
+
+      <section class="status-ribbon" aria-live="polite">
+        <div>
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="statusText">Connect your TxLINE free-tier token to load live World Cup fixtures.</span>
+        </div>
+        <time id="lastUpdated">No live read yet</time>
+      </section>
+
+      <section class="dashboard-grid" aria-label="Match Pulse dashboard">
+        <section class="fixtures-panel panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">LIVE INPUT</p>
+              <h2>Match board</h2>
+            </div>
+            <span id="fixtureCount" class="count-pill">0 fixtures</span>
+          </div>
+          <div id="fixtureList" class="fixture-list" aria-live="polite">
+            <div class="empty-state">
+              <strong>Waiting for a live feed</strong>
+              <p>Match Pulse never substitutes invented scores for TxLINE data.</p>
+            </div>
+          </div>
+        </section>
+
+        <aside class="side-stack">
+          <section class="panel pulse-panel">
+            <div class="panel-heading compact">
+              <div>
+                <p class="eyebrow">FAN SIGNAL</p>
+                <h2>Next-match pulse</h2>
+              </div>
+            </div>
+            <div id="selectedFixture" class="selected-fixture">
+              <strong>Select a fixture</strong>
+              <p>Choose a match to see its latest score-event state and set a local pick.</p>
+            </div>
+            <div id="pickControls" class="pick-controls" hidden>
+              <button data-pick="home" type="button"></button>
+              <button data-pick="draw" type="button">Draw</button>
+              <button data-pick="away" type="button"></button>
+            </div>
+            <p id="pickNotice" class="microcopy">Picks stay on this device. Nothing is posted or wagered.</p>
+          </section>
+
+          <section class="panel event-panel">
+            <div class="panel-heading compact">
+              <div>
+                <p class="eyebrow">REAL-TIME CONTEXT</p>
+                <h2>Latest score event</h2>
+              </div>
+            </div>
+            <div id="eventDetails" class="event-details">
+              <strong>No fixture selected</strong>
+              <p>Match Pulse reads the official score snapshot only after you select a fixture.</p>
+            </div>
+          </section>
+        </aside>
+      </section>
+
+      <section class="how-it-works">
+        <div>
+          <p class="eyebrow">BUILT FOR THE TXLINE HACKATHON</p>
+          <h2>A fan experience, not a betting interface.</h2>
+        </div>
+        <ol>
+          <li><span>01</span> Subscribe to the TxLINE World Cup free tier with your Solana wallet.</li>
+          <li><span>02</span> Paste the activated API token into this browser session.</li>
+          <li><span>03</span> Match Pulse refreshes official fixtures and score-event state every 30 seconds.</li>
+        </ol>
+      </section>
+    </main>
+
+    <dialog id="setupDialog" class="setup-dialog" aria-labelledby="setupTitle">
+      <form id="setupForm" method="dialog">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">TXLINE CONNECTION</p>
+            <h2 id="setupTitle">Bring live World Cup data in</h2>
+          </div>
+          <button id="closeSetup" class="icon-button" aria-label="Close connection dialog" type="button">×</button>
+        </div>
+        <p>
+          Match Pulse creates a short-lived guest session in this browser, then uses your
+          activated TxLINE API token only for direct reads. The token is stored in
+          <code>sessionStorage</code>, never in source control.
+        </p>
+        <a class="docs-link" href="https://txline.txodds.com/documentation/worldcup" target="_blank" rel="noreferrer">
+          Open the TxLINE World Cup free-tier guide ↗
+        </a>
+        <label for="apiToken">Activated TxLINE API token</label>
+        <input id="apiToken" name="apiToken" autocomplete="off" spellcheck="false" placeholder="Paste the token after wallet activation" />
+        <p class="microcopy">The official free tier needs a wallet-owned subscription transaction and activation signature. Complete those directly in your wallet, then return here.</p>
+        <div class="dialog-actions">
+          <button id="startGuest" class="button button-secondary" type="button">Start guest session</button>
+          <button class="button button-primary" value="default" type="submit">Save & load fixtures</button>
+        </div>
+      </form>
+    </dialog>
+
+    <template id="fixtureTemplate">
+      <article class="fixture-card">
+        <div class="fixture-meta">
+          <span class="fixture-competition"></span>
+          <time class="fixture-time"></time>
+        </div>
+        <button class="fixture-main" type="button">
+          <span class="team team-home"></span>
+          <span class="versus">vs</span>
+          <span class="team team-away"></span>
+        </button>
+        <div class="fixture-footer">
+          <span class="fixture-state">Upcoming</span>
+          <span class="fixture-action">Open pulse →</span>
+        </div>
+      </article>
+    </template>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
